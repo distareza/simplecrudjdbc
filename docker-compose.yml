@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+   oracle-12c:
+      container_name: oracle-12c
+      image: store/oracle/database-enterprise:12.2.0.1
+      ports:
+         - 1521:1521
+      environment:
+         - DB_SID=REZA_DB
+         - DB_PDB=REZA_PDB
+         - DB_DOMAIN=localdomain
+      volumes:
+         - C:\opt\oracle-db-data:/ORCL
+      networks:
+         - mynetwork
+         
+   javacustomapp:
+      container_name: javacustomapp
+      image: javacustomapp:0.1
+      ports:
+         - 8080:8080
+      depends_on:
+         - oracle-12c
+      environment:
+         - ORACLE_HOST=oracle-12c
+         - ORACLE_PORT=1521
+         - ORACLE_SID=REZA_DB
+         - DB_USER=test
+         - DB_PASS=test
+      networks:
+         - mynetwork
+ 
+networks:
+   mynetwork:
+      name: mycustomnetwork
